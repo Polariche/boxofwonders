@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>  </head>
+
+  <body>
+    <canvas id="myCanvas" width="800px" height="600px" style="background-color: #AAAAAA">
+    </canvas>
+
+    <script>
+      var startTime = (new Date()).getTime();
+      fps = 60
+
+      function draw(c, time) {
+        var ctx = c.getContext("2d");
+        //ctx.clearRect(0, 0, c.width, c.height);
+
+        var w = 10
+        var h = 10
+        ctx.fillStyle = "#FF0000";
+        ctx.fillRect((time*0.1)%(800+w) - w, 30 + 30*Math.sin(time/1000), w, h);
+      }
+
+      function update() {
+        var time = new Date().getTime() - startTime;
+        var c = document.getElementById("myCanvas")
+
+        draw(c, time)
+
+        setTimeout(function() {
+          update()
+        }, 1000 / fps)
+      }
+
+      update()
+    </script>
+  </body>
+</html>  
