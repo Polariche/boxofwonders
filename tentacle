@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        display: table-cell;
+          vertical-align: middle;
+      }
+      html, body {
+          height: 100%;
+      }
+      html {
+          display: table;
+          margin: auto;
+      }
+    </style>  </head>
+
+  <body style="align: center">
+    <canvas id="myCanvas" width="800px" height="600px" style="background-color: #AAAAAA">
+    </canvas>
+
+    <script>
+      var startTime = (new Date()).getTime();
+      fps = 60
+
+      function sin(a) {
+        return Math.sin(a)
+      }
+
+      function cos(a) {
+        return Math.cos(a)
+      }
+
+      function rgb(r, g, b){
+        r = Math.floor(r)
+        g = Math.floor(g)
+        b = Math.floor(b)
+        return "rgb("+r+","+g+","+b+")";
+      }
+
+      function circleDot(x, y, r, a) {
+        return [x+r*cos(a), y+r*sin(a)];
+      }
+
+      function draw(c, time) {
+        var ctx = c.getContext("2d");
+        ctx.clearRect(0, 0, c.width, c.height);
+
+        var x = 400;
+        var y = 300;
+        var r = 25;
+        var legs = 8;
+
+        //center
+        //ctx.fillStyle = rgb(0,0,0);
+        //ctx.fillRect(x, y, 50, 50);
+
+        //dem legs
+        for (i=0;i<legs;i++) {
+          var rad = r;
+
+          /* box ver
+          for (j=0;j<8;j++) {
+            var pi = Math.PI
+            var size = 50*(1-0.1*j);
+            rad += r*(j>4?1-0.07*j:1);
+
+            var coord = circleDot(x, y, rad, i*(2*pi)/legs + pi/6*sin((time-200*j)/1000))
+            ctx.fillStyle = rgb(0,0,0);
+            ctx.fillRect(coord[0], coord[1], size, size);
+          }*/
+
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          for (j=0;j<12;j++) {
+            var pi = Math.PI
+            var size = 50*(1-0.08*j);
+            rad += r*(j>4?1-0.07*j:1);
+            var a = i*(2*pi)/legs + pi/6*sin((time-200*j)/1000);
+
+            var coord = circleDot(x, y, rad, a);
+            ctx.lineTo(coord[0],coord[1]);
+            ctx.lineWidth = size;
+            ctx.stroke();
+
+            coord = circleDot(x, y, rad-3, a);
+            ctx.moveTo(coord[0],coord[1]);
+          }
+        }
+      }
+
+      function update() {
+        var time = new Date().getTime() - startTime;
+        var c = document.getElementById("myCanvas")
+        draw(c, time)
+        setTimeout(function() {
+          update()
+        }, 1000 / fps)
+      }
+
+      update()
+    </script>
+  </body>
+</html>  
