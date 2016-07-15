@@ -18,10 +18,11 @@
     </style>  </head>
 
   <body style="align: center">
-    <canvas id="myCanvas" width="800px" height="600px" style="background-color: #AAAAAA">
+    <canvas id="myCanvas" width="800px" height="600px" style="background-color: #236A62">
     </canvas>
 
     <script>
+      var pi = Math.PI
       var startTime = (new Date()).getTime();
       fps = 60
 
@@ -40,6 +41,21 @@
         return "rgb("+r+","+g+","+b+")";
       }
 
+      function lerp(a, b, t) {
+        return a + (b-a)*t
+      }
+
+      function arrayLerp(a, b, t) {
+        var len = a.length < b.length ? a.length : b.length;
+        var arr = [];
+
+        for (i=0;i<len;i++) {
+          arr[i] = lerp(a[i], b[i], t)
+        }
+
+        return arr;
+      }
+
       function circleDot(x, y, r, a) {
         return [x+r*cos(a), y+r*sin(a)];
       }
@@ -53,11 +69,7 @@
         var r = 25;
         var legs = 8;
 
-        //center
-        //ctx.fillStyle = rgb(0,0,0);
-        //ctx.fillRect(x, y, 50, 50);
-
-        //dem legs
+        //legs
         for (i=0;i<legs;i++) {
           var rad = r;
 
@@ -75,17 +87,27 @@
           ctx.beginPath();
           ctx.moveTo(x, y);
           for (j=0;j<12;j++) {
-            var pi = Math.PI
-            var size = 50*(1-0.08*j);
-            rad += r*(j>4?1-0.07*j:1);
             var a = i*(2*pi)/legs + pi/6*sin((time-200*j)/1000);
+            var size = 50*(1-0.08*j);
+            var color;
+
+            if (j>4) {
+              //rgb_arr = arrayLerp([255, 127, 117], [100, 30, 25], (j-4)/8);
+              //color = rgb(rgb_arr[0], rgb_arr[1], rgb_arr[2]);
+              color = rgb(255, 127, 117);
+              rad += r*(1-0.07*j)
+            } else {
+              color = rgb(255, 127, 117);
+              rad += r;
+            }
 
             var coord = circleDot(x, y, rad, a);
             ctx.lineTo(coord[0],coord[1]);
             ctx.lineWidth = size;
+            ctx.strokeStyle = color;
             ctx.stroke();
 
-            coord = circleDot(x, y, rad-3, a);
+            coord = circleDot(x, y, rad-5, a);
             ctx.moveTo(coord[0],coord[1]);
           }
         }
