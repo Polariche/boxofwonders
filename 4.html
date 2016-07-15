@@ -16,14 +16,31 @@
       var startTime = (new Date()).getTime();
       fps = 60
 
+      function rgb(r, g, b){
+        r = Math.floor(r)
+        g = Math.floor(g)
+        b = Math.floor(b)
+        return "rgb("+r+","+g+","+b+")";
+      }
+
+      function lerp(a,b,c, t) {
+        return 
+      }
+
       function draw(c, time) {
         var ctx = c.getContext("2d");
         //ctx.clearRect(0, 0, c.width, c.height);
 
-        var w = 10
-        var h = 10
-        ctx.fillStyle = "#FF0000";
-        ctx.fillRect((time*0.1)%(800+w) - w, 30 + 30*Math.sin(time/1000), w, h);
+        var w = 5
+        var h = 5
+        var spd = 0.1
+        var lineWidth = 100
+
+        var x = (time*spd)%(c.width+w) - w
+        var y = 150+ 80*Math.sin(time/1000)
+        //ctx.fillStyle = rgb(255*Math.cos(time/1000*1.5),255*Math.sin(time/1000),255*Math.cos(time/1000*2));
+        ctx.fillRect(x, y, w, h);
+
       }
 
       function update() {
