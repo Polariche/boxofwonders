@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        display: table-cell;
+          vertical-align: middle;
+      }
+      html, body {
+          height: 100%;
+      }
+      html {
+          display: table;
+          margin: auto;
+      }
+    </style>  </head>
+
+  <body style="align: center">
+    <canvas id="myCanvas" width="800px" height="600px" style="background-color: #AAAAAA">
+    </canvas>
+
+    <script>
+      var x = [];
+
+
+      for (var i=0;i<10;i++) {
+        x[4*i] = [100*i, 0];
+        x[4*i+1] = [0, 100*i];
+        x[4*i+2] = [-100*i, 0];
+        x[4*i+3] = [0, -100*i];
+      }
+
+      var degenerate = [[0,1], 
+                       [-4,-4]];
+
+      var degenerate2 = [[-1, -1], 
+                        [0, -1]];
+
+      var spiral = [[3, 4], 
+                    [-4, 3]];
+
+      var saddle = [[1, 0], 
+                    [0, -1]];
+
+      var center = [[3, 4], 
+                    [-4, -3]];
+
+      var a = center;
+
+      var startTime = (new Date()).getTime();
+      fps = 60
+
+      function matrixMult(x, y) {
+        var dx = a[0][0]*x + a[0][1]*y;
+        var dy = a[1][0]*x  + a[1][1]*y;
+        return [dx, dy];
+      }
+
+      function approx(x,y) {
+        var m = matrixMult(x,y);
+        var n = matrixMult(m[0], m[1]);
+        // Taken from Newton's method in optimization in Wikipedia
+        x += m[0] / fps + 1/2*n[0] / fps/fps;   
+        y += m[1] / fps + 1/2*n[1] / fps/fps;
+
+        return [x,y];
+      }
+
+      function drawField(c) {
+        var ctx = c.getContext("2d");
+        var k = 20;
+        var l = 15;
+
+        for (var i=0; i<k; i++) {
+          for (var j=0; j<l; j++) {
+            var x_ = (i-k/2)*800/k;
+            var y_ = (j-l/2)*600/l;
+            ctx.moveTo(x_+400, y_+300);
+
+            var m = approx(x_, y_);
+            x_ = m[0];
+            y_ = m[1];
+
+            ctx.lineTo(x_+400, y_+300);
+            ctx.strokeStyle = "#009900";
+            ctx.stroke();
+          }
+        }
+      }
+
+      function draw(c) {
+        var ctx = c.getContext("2d");
+        //ctx.clearRect(0, 0, c.width, c.height);
+
+        for (var i =0; i<x.length; i++) {
+          var m = approx(x[i][0], x[i][1]);
+          x[i][0] = m[0];
+          x[i][1] = m[1];
+
+          ctx.fillRect(x[i][0]+400,x[i][1]+300, 1,1);
+        }   
+      }
+
+
+      function update() {
+        var time = new Date().getTime() - startTime;
+        var c = document.getElementById("myCanvas")
+        draw(c, time)
+        setTimeout(function() {
+          update()
+        }, 1000 / fps)
+      }
+
+      //drawField(document.getElementById("myCanvas"));
+      update()
+    </script>
+  </body>
+</html>  
